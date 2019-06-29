@@ -1,0 +1,12 @@
+stage 121
+list cache 4.7
+set cache 5.07
+
+
+stage 143
+cache: 0.95 sec
+no cache: 56.5 sec
+
+stage 155
+
+stage 170
