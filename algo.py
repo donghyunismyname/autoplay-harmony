@@ -3,8 +3,8 @@ import random
 
 
 class Game:
-	def __init__(self, N, cnt, color):
-		self.N = N
+	def __init__(self, cnt, color):
+		self.N = len(color)
 		self.cnt = cnt
 		self.color = color
 		self.remainingSwaps = sum(map(sum, cnt)) // 2
@@ -170,35 +170,10 @@ class Game:
 
 
 
-
-
 	def solve(self):
-		self.clear()
-		sol = self.search(randomSwaps = 0)
-		print('cachesize', len(self.cache))
-		print('phasecount', self.miss, self.bad, self.good, self.cool)
-		if sol: return sol
-
-		self.clear()
-		sol = self.search(randomSwaps = 1)
-		print('cachesize', len(self.cache))
-		print('phasecount', self.miss, self.bad, self.good, self.cool)
-		if sol: return sol
-
-		self.clear()
-		sol = self.search(randomSwaps = 2)
-		print('cachesize', len(self.cache))
-		print('phasecount', self.miss, self.bad, self.good, self.cool)
-		if sol: return sol
-
-		self.clear()
-		sol = self.search(randomSwaps = 3)
-		print('cachesize', len(self.cache))
-		print('phasecount', self.miss, self.bad, self.good, self.cool)
-		if sol: return sol
-
-		self.clear()
-		sol = self.search(randomSwaps = 4)
-		print('cachesize', len(self.cache))
-		print('phasecount', self.miss, self.bad, self.good, self.cool)
-		if sol: return sol
+		for n in range(100):
+			self.clear()
+			sol = self.search(randomSwaps = n)
+			print(n, 'cachesize', len(self.cache))
+			print(n, 'phasecount', self.miss, self.bad, self.good, self.cool)
+			if sol: return sol

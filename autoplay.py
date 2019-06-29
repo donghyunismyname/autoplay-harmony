@@ -12,7 +12,7 @@ def main():
 		N, cnt, color = interact.readPuzzle()
 
 		start = time.time()
-		sol = algo.Game(N, cnt, color).solve()
+		sol = algo.Game(cnt, color).solve()
 		timeElapsed = time.time() - start
 		assert sol
 
