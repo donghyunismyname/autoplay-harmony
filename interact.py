@@ -5,19 +5,30 @@ import time
 TIME_EYE = 1.0
 TIME_CLICK1 = 0.5
 TIME_CLICK2 = 0.5
-TIME_LAST_CLICK = 2.0
+TIME_LAST_CLICK = 3.0
 TIME_NEXT_STAGE = 4.0
 
 
 X0 = 15
 Y0 = 270
-LEN = 562
+LEN = 550
 
 
 boardArea = (X0, Y0, X0 + LEN, Y0 + LEN)
 eyePosition = ((X0 + LEN) / 2, Y0 + LEN * 1.3)
 nextStagePosition = (X0 + LEN*0.5, Y0 + LEN*0.57)
 neverRatePosition = (X0 + LEN*0.2, Y0 + LEN*0.57)
+
+def main():
+	pyautogui.moveTo((X0, Y0))
+	time.sleep(0.2)
+	pyautogui.moveTo((X0, Y0+LEN))
+	time.sleep(0.2)
+	pyautogui.moveTo((X0+LEN, Y0))
+	time.sleep(0.2)
+	pyautogui.moveTo((X0+LEN, Y0+LEN))
+	time.sleep(0.2)
+	pyautogui.moveTo((X0, Y0))
 
 
 def readPuzzle():
@@ -41,7 +52,7 @@ def readPuzzle():
 			yDot += 10
 		yDot += 1
 
-	blockSize = int(LEN / N)
+	blockSize = LEN / N
 
 	# Sample the correct color
 	colorDic = {}
@@ -56,21 +67,21 @@ def readPuzzle():
 	color = [[-1] * N for _ in range(N)]
 	for i in range(N):
 		for j in range(N):
-			x0 = int(blockSize * j + blockSize * 0.2)
-			y0 = int(blockSize * i + blockSize * 0.2)
+			x0 = int(blockSize * j + blockSize * 0.15)
+			y0 = int(blockSize * i + blockSize * 0.15)
 			p = boardImg.getpixel((x0, y0))
 
 			color[i][j] = colorDic[p]
 
-			for xDot in range(x0, int(x0 + blockSize *0.6)):
-				for yDot in range(y0, int(y0 + blockSize *0.6)):
+			for xDot in range(x0, int(x0 + blockSize *0.7)):
+				for yDot in range(y0, int(y0 + blockSize *0.7)):
 					if boardImg.getpixel((xDot,yDot)) != p:
 						break
 				else:
 					continue
 				break
 
-			for x in range(xDot - 1, int(x0 + blockSize  * 0.6)):
+			for x in range(xDot - 1, int(x0 + blockSize  * 0.7)):
 				cnt[i][j] += boardImg.getpixel((x,yDot)) == p and boardImg.getpixel((x+1,yDot)) != p
 
 	print(N)
@@ -78,6 +89,9 @@ def readPuzzle():
 	print(cnt)
 	print(color)
 	assert sum(map(sum, cnt)) % 2 == 0
+	for i in range(N):
+		for j in range(N):
+			assert cnt[i][j] >= 1
 	return N, cnt, color
 
 
@@ -102,3 +116,7 @@ def gotoNextStage():
     #time.sleep(1)
     pyautogui.click(nextStagePosition)
     time.sleep(TIME_NEXT_STAGE)
+
+
+if __name__ == '__main__':
+	main()

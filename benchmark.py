@@ -3,11 +3,10 @@ import time
 import json
 
 DIR = 'stage/'
-hard = [385, 405, 415, 425, 455, 551, 556]
-medium = [381]
 easy = [104, 105, 275, 277, 280, 281, 282, 283, 284, 285, 383, 375, 370, 360, 310, 305, 276, 286, 297]
+hard = [381, 385, 405, 415, 425, 455, 551, 556, 578]
 
-filenames = map(str, easy + medium + hard)
+filenames = map(str, easy + hard)
 
 for filename in filenames:
 	with open(DIR+filename, 'r') as f:
