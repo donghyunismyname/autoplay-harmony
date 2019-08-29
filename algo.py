@@ -216,9 +216,9 @@ class Game:
 			self.miss += 1
 			randomSwaps -= 1
 			if randomSwaps%4 == 0:
-				moves = horizontalMoves
+				moves = horizontalMoves + verticalMoves
 			else:
-				moves = verticalMoves
+				moves = verticalMoves + horizontalMoves
 
 		elif self.numPerfectColumns() < self.N:
 			self.bad += 1
@@ -231,23 +231,31 @@ class Game:
 			# 				moves.append(s)
 			# moves = moves[:2]
 
+			p1 = list(filter(lambda s: self.swapPriority1(s) >= 1, horizontalMoves))
+			moves = p1
+
 			if len(moves) == 0:
-				p1 = list(filter(lambda s: self.swapPriority1(s) >= 1, horizontalMoves))
-				moves = p1
-			if len(moves) == 0 and randomSwaps >= -1:
-				randomSwaps -= 1
 				for s in verticalMoves:
 					self.doSwap(s)
 					mm = list(filter(lambda s: self.swapPriority1(s)>=1, self.getHorizontalMoves()))
 					self.doSwap(s, forward=False)
-					if mm != []:
+					if mm:
 						moves.append(s)
-			# if len(moves) == 0 and randomSwaps >= -3:
-			# 	randomSwaps -= 1
-			# 	p0 = list(filter(lambda s: self.swapPriority1(s) >= 0, horizontalMoves))
-			# 	moves = p0
+			if len(moves) == 0:
+				for s in verticalMoves:
+					self.doSwap(s)
+					for ss in self.getVerticalMoves() + self.getHorizontalMoves():
+						self.doSwap(ss)
+						mm = list(filter(lambda s: self.swapPriority1(s)>=1, self.getHorizontalMoves()))
+						self.doSwap(ss, forward=False)
+						if mm:
+							moves.append(s)
+					self.doSwap(s, forward=False)
+			if len(moves) == 0:
+			 	#p0 = list(filter(lambda s: self.swapPriority1(s) >= 0, horizontalMoves))
+			 	moves = horizontalMoves
 
-			moves = moves[:4]
+			moves = moves[:1]
 
 
 		# else:
