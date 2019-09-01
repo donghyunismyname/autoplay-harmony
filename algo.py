@@ -19,6 +19,12 @@ class Game:
 		self.good = 0
 		self.cool = 0
 
+	def copy(self):
+		return Game(
+			[[c for c in row] for row in self.cnt],
+			[[c for c in row] for row in self.color]
+		)
+
 	def __hash__(self):
 		val = 0
 		for row in self.color:
@@ -77,6 +83,11 @@ class Game:
 		self.remainingSwaps += -1 if forward else 1
 		self.cnt[ai][aj], self.cnt[bi][bj] = self.cnt[bi][bj], self.cnt[ai][aj]
 		self.color[ai][aj], self.color[bi][bj] = self.color[bi][bj], self.color[ai][aj]
+
+	def copySwap(self, s):
+		g = self.copy()
+		g.doSwap(s)
+		return g
 
 	def numUniqueColorsAtColumn(self, j):
 		return len(set([self.color[i][j] for i in range(self.N)]))
@@ -220,6 +231,7 @@ class Game:
 			else:
 				moves = verticalMoves + horizontalMoves
 
+
 		elif self.numPerfectColumns() < self.N:
 			self.bad += 1
 
@@ -304,3 +316,50 @@ class Game:
 			print(n, 'cachesize', len(self.cache))
 			print(n, 'phasecount', self.miss, self.bad, self.good, self.cool)
 			if sol: return sol
+
+	def dfs(self):
+		self.clear()
+		return self.dfs_worker()
+
+	def	dfs_worker(self):
+		if hash(self) in self.cache: return None
+		self.cache.add(hash(self))
+
+		if self.numPerfectRows() == self.N:
+			return self.solvePhase3()
+
+		moves = self.getVerticalMoves() + self.getHorizontalMoves()
+		for s in moves:
+			self.doSwap(s)
+			sol = self.dfs_worker()
+			if sol != None: return [s] + sol
+			self.doSwap(s, forward=False)
+
+	def bfs(self):
+		parent = {self:(None,None)}
+		self.cache = {hash(self)}
+		fringe = [self]
+
+		while fringe:
+			print(len(fringe))
+			next_fringe = []
+			for g in fringe:
+				for s in g.getHorizontalMoves() + g.getVerticalMoves():
+					gg = g.copySwap(s)
+					if hash(gg) in self.cache: continue
+
+					parent[gg] = (g, s)
+					self.cache.add(hash(gg))
+					next_fringe.append(gg)
+
+					if gg.numPerfectRows() == self.N:
+						sol = gg.solvePhase3()
+						if not sol: continue
+
+						cur = gg
+						while cur:
+							sol = [parent[cur][1]] + sol
+							cur = parent[cur][0]
+						return sol
+
+			fringe = next_fringe

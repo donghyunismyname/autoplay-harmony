@@ -13,9 +13,12 @@ for filename in filenames:
 		stage = json.load(f)
 		assert len(stage['dots']) == len(stage['color'])
 
+	N = len(stage['dots'])
+	S = sum(map(sum, stage['dots']))
+
 	startTime = time.time()
 	sol = algo.Game(stage['dots'], stage['color']).solve()
 	elapsedTime = time.time() - startTime
 
 	assert sol
-	print('\t\t\t\t', filename, '\t', elapsedTime)
+	print('\t\t\t\t', filename, '\t', elapsedTime, '\t', N, S)
