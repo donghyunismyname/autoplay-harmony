@@ -310,12 +310,16 @@ class Game:
 
 
 	def solve(self):
+		S = 0
 		for n in range(100):
 			self.clear()
 			sol = self.search(randomSwaps = n)
+			S += len(self.cache)
 			print(n, 'cachesize', len(self.cache))
 			print(n, 'phasecount', self.miss, self.bad, self.good, self.cool)
-			if sol: return sol
+			if sol:
+				print('\t\t\t\t','num', S)
+				return sol
 
 	def dfs(self):
 		self.clear()
